@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Suma y Multiplicación de Matrices con TensorFlow.js</title>
+  <!-- Cargar TensorFlow.js desde CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+</head>
+<body>
+  <h2>Matrices con TensorFlow.js</h2>
+
+  <!-- Inputs para que el usuario ingrese las dimensiones de las matrices -->
+  <label>Filas: <input type="number" id="filas" value="2"></label><br>
+  <label>Columnas: <input type="number" id="columnas" value="2"></label><br><br>
+
+  <!-- Botón para generar matrices y realizar operaciones -->
+  <button onclick="generar()">Generar y Calcular</button>
+
+  <!-- Área donde se muestran los resultados -->
+  <pre id="salida"></pre>
+
+  <script>
+    // Función principal que se ejecuta al hacer clic en el botón
+    function generar() {
+      // Leer valores de filas y columnas desde los inputs
+      const filas = parseInt(document.getElementById("filas").value);
+      const columnas = parseInt(document.getElementById("columnas").value);
+
+      // Generar dos matrices aleatorias con valores enteros del 1 al 20
+      const matriz1 = tf.randomUniform([filas, columnas], 1, 21, 'int32');
+      const matriz2 = tf.randomUniform([filas, columnas], 1, 21, 'int32');
+
+      // Realizar la suma elemento a elemento
+      const suma = tf.add(matriz1, matriz2);
+
+      // Realizar multiplicación matricial: matriz1 x matriz2 transpuesta
+      const multiplicacion = tf.matMul(matriz1, matriz2.transpose());
+
+      // Convertir tensores a arrays normales de JavaScript para poder mostrarlos
+      Promise.all([
+        matriz1.array(),
+        matriz2.array(),
+        suma.array(),
+        multiplicacion.array()
+      ]).then(([m1, m2, s, m]) => {
+        // Mostrar matrices y resultados en pantalla con formato bonito
+        document.getElementById("salida").textContent =
+          `Matriz 1:\n${JSON.stringify(m1, null, 2)}\n\n` +
+          `Matriz 2:\n${JSON.stringify(m2, null, 2)}\n\n` +
+          `Suma:\n${JSON.stringify(s, null, 2)}\n\n` +
+          `Multiplicación:\n${JSON.stringify(m, null, 2)}\n`;
+      });
+    }
+  </script>
+</body>
+</html>
